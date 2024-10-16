@@ -26,10 +26,10 @@ async function checkImages() {
 
   for (let i = startNum; i <= endNum; i++) {
     const urlOriginal = `${corsProxy}${encodeURIComponent(
-      baseUrlOriginal + index + ".png"
+      baseUrlOriginal + i + ".png"
     )}`;
     const urlReplaced = `${corsProxy}${encodeURIComponent(
-      baseUrlReplaced + index
+      baseUrlReplaced + i
     )}`;
 
     await checkImagePair(
