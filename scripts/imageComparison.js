@@ -19,12 +19,12 @@ async function checkImagePair(
   try {
     const originalBlob = await fetchImageAsBlob(urlOriginal);
     const originalUrl = URL.createObjectURL(originalBlob);
-    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}">`;
+    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}" width="100" height="100">`;
 
     try {
       const replacedBlob = await fetchImageAsBlob(urlReplaced);
       const replacedUrl = URL.createObjectURL(replacedBlob);
-      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}">`;
+      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}" width="100" height="100">`;
 
       const similarity = await calculateSimilarity(originalBlob, replacedBlob);
       cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
@@ -35,11 +35,13 @@ async function checkImagePair(
         row.classList.add("below-threshold");
       }
     } catch (error) {
-      cellReplaced.textContent = "Not found";
-      cellSimilarity.textContent = "0.00%";
+      cellReplaced.textContent =
+        "Error: Too many requests. Please try again later.";
+      cellSimilarity.textContent = "N/A";
     }
   } catch (error) {
-    cellOriginal.textContent = "Not found";
+    cellOriginal.textContent =
+      "Error: Too many requests. Please try again later.";
     cellReplaced.textContent = "N/A";
     cellSimilarity.textContent = "N/A";
   }
@@ -68,7 +70,7 @@ async function getImageHash(blob) {
   });
 }
 
-function getImageData(img, width = 32, height = 32) {
+function getImageData(img, width = 100, height = 100) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;

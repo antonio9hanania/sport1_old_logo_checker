@@ -25,6 +25,10 @@
           max="100"
         />
         <button id="checkImagesBtn">Check Images</button>
+        <p id="rateMessage" style="display: none; color: orange">
+          Note: Checking many images may take some time due to rate limiting.
+          Please be patient.
+        </p>
       </div>
       <div id="progressBar"></div>
       <div id="controlButtons" class="button-group hidden">
@@ -56,5 +60,13 @@
     <script src="scripts/utils.js" type="module"></script>
     <script src="scripts/imageComparison.js" type="module"></script>
     <script src="scripts/app.js" type="module"></script>
+    <script>
+      document
+        .getElementById("checkImagesBtn")
+        .addEventListener("click", function () {
+          document.getElementById("rateMessage").style.display = "block";
+          checkImages();
+        });
+    </script>
   </body>
 </html>

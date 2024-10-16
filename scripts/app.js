@@ -4,6 +4,7 @@ import {
   showElement,
   hideElement,
   updateDownloadButton,
+  delay,
 } from "./utils.js";
 
 const corsProxy = "https://cors-anywhere.herokuapp.com/";
@@ -35,6 +36,7 @@ async function checkImages() {
       urlReplaced
     );
     updateProgress(progressBar, i - startNum + 1, endNum - startNum + 1);
+    await delay(1000); // Add a 1-second delay between requests
   }
 
   showElement("downloadButtons");

@@ -25,10 +25,27 @@ function updateDownloadButton() {
   downloadButton.textContent = `Download Replaced Images (Below ${threshold}% Similarity)`;
 }
 
-async function fetchImageAsBlob(url) {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error("Network response was not ok");
-  return await response.blob();
+async function fetchImageAsBlob(url, retries = 3) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      if (response.status === 429 && retries > 0) {
+        await delay(2000); // Wait for 2 seconds before retrying
+        return fetchImageAsBlob(url, retries - 1);
+      }
+      throw new Error("Network response was not ok");
+    }
+    return await response.blob();
+  } catch (error) {
+    if (retries > 0) {
+      await delay(2000); // Wait for 2 seconds before retrying
+      return fetchImageAsBlob(url, retries - 1);
+    }
+    throw error;
+  }
+}
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export {
@@ -37,4 +54,5 @@ export {
   hideElement,
   updateDownloadButton,
   fetchImageAsBlob,
+  delay,
 };
