@@ -32,13 +32,13 @@ async function checkImagePair(
     let originalBlob = await fetchImageAsBlob(urlOriginal);
     originalBlob = await resizeImageBlob(originalBlob, 100, 100);
     const originalUrl = URL.createObjectURL(originalBlob);
-    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}">`;
+    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}" width="100" height="100">`;
 
     try {
       let replacedBlob = await fetchImageAsBlob(urlReplaced);
       replacedBlob = await resizeImageBlob(replacedBlob, 100, 100);
       const replacedUrl = URL.createObjectURL(replacedBlob);
-      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}">`;
+      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}" width="100" height="100">`;
 
       const similarity = await calculateSimilarity(originalBlob, replacedBlob);
       cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
@@ -48,8 +48,6 @@ async function checkImagePair(
         originalBlob,
         replacedBlob,
         similarity,
-        originalUrl,
-        replacedUrl,
       });
 
       if (similarity < threshold) {
