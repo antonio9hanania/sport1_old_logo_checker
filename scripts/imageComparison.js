@@ -19,12 +19,12 @@ async function checkImagePair(
   try {
     const originalBlob = await fetchImageAsBlob(urlOriginal);
     const originalUrl = URL.createObjectURL(originalBlob);
-    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}" width="100" height="100">`;
+    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}">`;
 
     try {
       const replacedBlob = await fetchImageAsBlob(urlReplaced);
       const replacedUrl = URL.createObjectURL(replacedBlob);
-      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}" width="100" height="100">`;
+      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}">`;
 
       const similarity = await calculateSimilarity(originalBlob, replacedBlob);
       cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
@@ -68,7 +68,7 @@ async function getImageHash(blob) {
   });
 }
 
-function getImageData(img, width = 100, height = 100) {
+function getImageData(img, width = 32, height = 32) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
