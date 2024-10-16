@@ -28,15 +28,26 @@ async function checkImages() {
   for (let i = startNum; i <= endNum; i++) {
     const urlOriginal = `${corsProxy}${baseUrlOriginal}${i}.png`;
     const urlReplaced = `${corsProxy}${baseUrlReplaced}${i}`;
-    await checkImagePair(
-      i,
-      tableBody,
-      similarityThreshold,
-      urlOriginal,
-      urlReplaced
-    );
-    updateProgress(progressBar, i - startNum + 1, endNum - startNum + 1);
-    await delay(1000); // Add a 1-second delay between requests
+    try {
+      await checkImagePair(
+        i,
+        tableBody,
+        similarityThreshold,
+        urlOriginal,
+        urlReplaced
+      );
+      updateProgress(progressBar, i - startNum + 1, endNum - startNum + 1);
+      await delay(1000); // Add a 1-second delay between requests
+    } catch (error) {
+      console.error(`Error checking image pair ${i}:`, error);
+      // Add the error to the table
+      const row = tableBody.insertRow();
+      row.insertCell(0).textContent = i;
+      row.insertCell(1).textContent = "Error: " + error.message;
+      row.insertCell(2).textContent = "N/A";
+      row.insertCell(3).textContent = "N/A";
+      await delay(5000); // Wait 5 seconds before next attempt
+    }
   }
 
   showElement("downloadButtons");
@@ -102,5 +113,11 @@ document
 document
   .getElementById("similarityThreshold")
   .addEventListener("change", updateDownloadButton);
+
+// Export functions to make them globally available
+window.checkImages = checkImages;
+window.filterTable = filterTable;
+window.showAllImages = showAllImages;
+window.downloadImages = downloadImages;
 
 export { validPairs };
