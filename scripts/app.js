@@ -13,57 +13,33 @@ const baseUrlReplaced =
 
 let validPairs = [];
 
-async function checkImagePair(
-  index,
-  tableBody,
-  threshold,
-  urlOriginal,
-  urlReplaced
-) {
-  const row = tableBody.insertRow();
-  const cellIndex = row.insertCell(0);
-  const cellOriginal = row.insertCell(1);
-  const cellReplaced = row.insertCell(2);
-  const cellSimilarity = row.insertCell(3);
+async function checkImages() {
+  const startNum = parseInt(document.getElementById("startNum").value);
+  const endNum = parseInt(document.getElementById("endNum").value);
+  const similarityThreshold = parseFloat(
+    document.getElementById("similarityThreshold").value
+  );
+  const tableBody = document.getElementById("imageTableBody");
+  const progressBar = document.getElementById("progressBar");
+  tableBody.innerHTML = "";
+  validPairs = [];
 
-  cellIndex.textContent = index;
-
-  try {
-    let originalBlob = await fetchImageAsBlob(urlOriginal);
-    originalBlob = await resizeImageBlob(originalBlob, 100, 100);
-    const originalUrl = URL.createObjectURL(originalBlob);
-    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}">`;
-
-    try {
-      let replacedBlob = await fetchImageAsBlob(urlReplaced);
-      replacedBlob = await resizeImageBlob(replacedBlob, 100, 100);
-      const replacedUrl = URL.createObjectURL(replacedBlob);
-      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}">`;
-
-      const similarity = await calculateSimilarity(originalBlob, replacedBlob);
-      cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
-
-      validPairs.push({
-        index,
-        originalBlob,
-        replacedBlob,
-        similarity,
-        originalUrl,
-        replacedUrl,
-      });
-
-      if (similarity < threshold) {
-        row.classList.add("below-threshold");
-      }
-    } catch (error) {
-      cellReplaced.textContent = "Not found";
-      cellSimilarity.textContent = "0.00%";
-    }
-  } catch (error) {
-    cellOriginal.textContent = "Not found";
-    cellReplaced.textContent = "N/A";
-    cellSimilarity.textContent = "N/A";
+  for (let i = startNum; i <= endNum; i++) {
+    const urlOriginal = `${corsProxy}${baseUrlOriginal}${i}.png`;
+    const urlReplaced = `${corsProxy}${baseUrlReplaced}${i}`;
+    await checkImagePair(
+      i,
+      tableBody,
+      similarityThreshold,
+      urlOriginal,
+      urlReplaced
+    );
+    updateProgress(progressBar, i - startNum + 1, endNum - startNum + 1);
   }
+
+  showElement("downloadButtons");
+  showElement("controlButtons");
+  updateDownloadButton();
 }
 
 function filterTable() {
