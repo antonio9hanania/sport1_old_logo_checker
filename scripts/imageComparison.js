@@ -48,7 +48,10 @@ async function checkImagePair(
 }
 
 async function calculateSimilarity(blob1, blob2) {
-  // Blobs should already be 100x100, so we don't need to resize here
+  // Both blobs should already be 100x100, but let's ensure it
+  const resizedBlob1 = await resizeImageBlob(blob1, 100, 100);
+  const resizedBlob2 = await resizeImageBlob(blob2, 100, 100);
+
   const [hash1, hash2] = await Promise.all([
     getImageHash(blob1),
     getImageHash(blob2),

@@ -32,13 +32,13 @@ async function checkImagePair(
     let originalBlob = await fetchImageAsBlob(urlOriginal);
     originalBlob = await resizeImageBlob(originalBlob, 100, 100);
     const originalUrl = URL.createObjectURL(originalBlob);
-    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}" width="100" height="100">`;
+    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}">`;
 
     try {
       let replacedBlob = await fetchImageAsBlob(urlReplaced);
       replacedBlob = await resizeImageBlob(replacedBlob, 100, 100);
       const replacedUrl = URL.createObjectURL(replacedBlob);
-      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}" width="100" height="100">`;
+      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}">`;
 
       const similarity = await calculateSimilarity(originalBlob, replacedBlob);
       cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
@@ -48,6 +48,8 @@ async function checkImagePair(
         originalBlob,
         replacedBlob,
         similarity,
+        originalUrl,
+        replacedUrl,
       });
 
       if (similarity < threshold) {
@@ -99,7 +101,7 @@ function downloadImages(type) {
   });
 
   zip.generateAsync({ type: "blob" }).then((content) => {
-    saveAs(content, `${type}_images_100x100.zip`);
+    saveAs(content, `${type}_images.zip`);
   });
 }
 
