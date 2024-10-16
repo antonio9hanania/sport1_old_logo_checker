@@ -1,5 +1,5 @@
 import { validPairs } from "./app.js";
-import { fetchImageAsBlob } from "./utils.js";
+import { fetchImageAsBlob, resizeImageBlob } from "./utils.js";
 
 async function checkImagePair(
   index,
@@ -17,12 +17,14 @@ async function checkImagePair(
   cellIndex.textContent = index;
 
   try {
-    const originalBlob = await fetchImageAsBlob(urlOriginal);
+    let originalBlob = await fetchImageAsBlob(urlOriginal);
+    originalBlob = await resizeImageBlob(originalBlob, 100, 100);
     const originalUrl = URL.createObjectURL(originalBlob);
     cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}">`;
 
     try {
-      const replacedBlob = await fetchImageAsBlob(urlReplaced);
+      let replacedBlob = await fetchImageAsBlob(urlReplaced);
+      replacedBlob = await resizeImageBlob(replacedBlob, 100, 100);
       const replacedUrl = URL.createObjectURL(replacedBlob);
       cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}">`;
 

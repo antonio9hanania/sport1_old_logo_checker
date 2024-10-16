@@ -31,10 +31,28 @@ async function fetchImageAsBlob(url) {
   return await response.blob();
 }
 
+async function resizeImageBlob(blob, width, height) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob((resizedBlob) => {
+        resolve(resizedBlob);
+      }, "image/png");
+    };
+    img.src = URL.createObjectURL(blob);
+  });
+}
+
 export {
   updateProgress,
   showElement,
   hideElement,
   updateDownloadButton,
   fetchImageAsBlob,
+  resizeImageBlob,
 };
