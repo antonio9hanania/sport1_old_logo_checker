@@ -9,7 +9,7 @@ import {
 const corsProxy = "https://cors-anywhere.herokuapp.com/";
 const baseUrlOriginal = "https://sport1.maariv.co.il/_365images/Competitors/";
 const baseUrlReplaced =
-  "https://imagecache.365scores.com/image/upload/f_png,w_100,h_100,c_limit,q_auto:eco,d_Competitors:default1.png/v7/Competitors/";
+  "https://imagecache.365scores.com/image/upload/f_png,w_68,h_68,c_limit,q_auto:eco,dpr_2,d_Competitors:default1.png/v7/Competitors/";
 
 let validPairs = [];
 
