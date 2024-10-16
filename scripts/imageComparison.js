@@ -20,18 +20,23 @@ async function checkImagePair(
     let originalBlob = await fetchImageAsBlob(urlOriginal);
     originalBlob = await resizeImageBlob(originalBlob, 100, 100);
     const originalUrl = URL.createObjectURL(originalBlob);
-    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}">`;
+    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}" width="100" height="100">`;
 
     try {
       let replacedBlob = await fetchImageAsBlob(urlReplaced);
       replacedBlob = await resizeImageBlob(replacedBlob, 100, 100);
       const replacedUrl = URL.createObjectURL(replacedBlob);
-      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}">`;
+      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}" width="100" height="100">`;
 
       const similarity = await calculateSimilarity(originalBlob, replacedBlob);
       cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
 
-      validPairs.push({ index, originalBlob, replacedBlob, similarity });
+      validPairs.push({
+        index,
+        originalBlob,
+        replacedBlob,
+        similarity,
+      });
 
       if (similarity < threshold) {
         row.classList.add("below-threshold");
@@ -46,8 +51,8 @@ async function checkImagePair(
     cellSimilarity.textContent = "N/A";
   }
 }
-
 async function calculateSimilarity(blob1, blob2) {
+  // Blobs should already be 100x100, so we don't need to resize here
   const [hash1, hash2] = await Promise.all([
     getImageHash(blob1),
     getImageHash(blob2),
@@ -55,7 +60,6 @@ async function calculateSimilarity(blob1, blob2) {
   const distance = hammingDistance(hash1, hash2);
   return 100 - (distance / hash1.length) * 100;
 }
-
 async function getImageHash(blob) {
   return new Promise((resolve, reject) => {
     const img = new Image();

@@ -77,10 +77,9 @@ function downloadImages(type) {
   });
 
   zip.generateAsync({ type: "blob" }).then((content) => {
-    saveAs(content, `${type}_images.zip`);
+    saveAs(content, `${type}_images_100x100.zip`);
   });
 }
-
 // Event Listeners
 document
   .getElementById("checkImagesBtn")
