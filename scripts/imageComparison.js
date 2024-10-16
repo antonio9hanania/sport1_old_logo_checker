@@ -68,7 +68,7 @@ async function getImageHash(blob) {
   });
 }
 
-function getImageData(img, width = 32, height = 32) {
+function getImageData(img, width = 100, height = 100) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
