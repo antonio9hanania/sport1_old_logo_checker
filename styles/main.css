@@ -80,10 +80,11 @@ th {
 }
 
 img {
-  max-width: 100px;
-  max-height: 100px;
+  width: 100px;
+  height: 100px;
   display: block;
   margin: 0 auto;
+  object-fit: contain;
 }
 
 .below-threshold {
