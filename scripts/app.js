@@ -6,8 +6,7 @@ import {
   updateDownloadButton,
 } from "./utils.js";
 
-const corsProxy =
-  "https://your-worker-name.your-subdomain.workers.dev/?apiurl=";
+const corsProxy = "https://cold-sea-bd9d.antonioh.workers.dev/?apiurl=";
 const baseUrlOriginal = "https://sport1.maariv.co.il/_365images/Competitors/";
 const baseUrlReplaced =
   "https://imagecache.365scores.com/image/upload/f_png,w_68,h_68,c_limit,q_auto:eco,dpr_2,d_Competitors:default1.png/v7/Competitors/";
