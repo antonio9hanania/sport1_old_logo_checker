@@ -1,6 +1,6 @@
 import { fetchImageWithCache, resizeImageBlob } from "./utils.js";
 
-async function checkImagePair(
+export async function checkImagePair(
   index,
   tableBody,
   threshold,
