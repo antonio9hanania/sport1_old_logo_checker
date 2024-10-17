@@ -4,6 +4,8 @@
   --background-color: #f4f4f4;
   --text-color: #333;
   --border-color: #ddd;
+  --below-threshold-color: #ffeaa7;
+  --below-threshold-color-dark: #635c36;
 }
 
 * {
@@ -91,6 +93,7 @@ button:focus {
   width: 100%;
   overflow-x: auto;
   position: relative;
+  background-color: var(--background-color);
 }
 
 table {
@@ -106,7 +109,6 @@ td {
   text-align: left;
   border: 1px solid var(--border-color);
   min-width: 100px;
-  background-color: var(--background-color);
 }
 
 th {
@@ -115,6 +117,10 @@ th {
   position: sticky;
   top: 0;
   z-index: 10;
+}
+
+td {
+  background-color: white; /* Explicitly set background for td */
 }
 
 /* Freeze first column including its header */
@@ -130,15 +136,15 @@ th:first-child {
   z-index: 11;
 }
 
+.below-threshold {
+  background-color: var(--below-threshold-color) !important;
+}
+
 img {
   max-width: 80px;
   height: auto;
   display: block;
   margin: 0 auto;
-}
-
-.below-threshold {
-  background-color: #ffeaa7;
 }
 
 .hidden {
@@ -254,25 +260,15 @@ img {
     background-color: var(--background-color);
   }
 
-  input,
-  button {
-    background-color: #444;
-    color: var(--text-color);
-  }
-
-  th,
-  td {
-    background-color: var(--background-color);
-  }
   th {
     background-color: var(--secondary-color);
   }
 
-  td:first-child {
-    background-color: var(--background-color);
+  td {
+    background-color: #444; /* Dark mode background for td */
   }
 
   .below-threshold {
-    background-color: #635c36;
+    background-color: var(--below-threshold-color-dark) !important;
   }
 }
