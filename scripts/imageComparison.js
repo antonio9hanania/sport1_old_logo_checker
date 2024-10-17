@@ -1,6 +1,6 @@
 import { fetchImageWithCache, resizeImageBlob } from "./utils.js";
 
-export async function checkImagePair(
+async function checkImagePair(
   index,
   tableBody,
   threshold,
@@ -52,10 +52,12 @@ export async function checkImagePair(
 
       return { index, originalBlob, replacedBlob, similarity };
     } catch (error) {
+      console.error("Error processing replaced image:", error);
       cellReplaced.textContent = "Not found";
       cellSimilarity.textContent = "0.00%";
     }
   } catch (error) {
+    console.error("Error processing original image:", error);
     cellOriginal.textContent = "Not found";
     cellReplaced.textContent = "N/A";
     cellSimilarity.textContent = "N/A";
