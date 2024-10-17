@@ -14,14 +14,23 @@ function getCachedImage(url) {
   return null;
 }
 
-function setCachedImage(url, data, cacheDuration) {
-  const now = Math.floor(Date.now() / 1000); // Current time in seconds
-  const cacheData = JSON.stringify({
-    timestamp: now,
-    expiration: now + cacheDuration,
-    data: data,
-  });
-  localStorage.setItem(url, cacheData);
+function setCachedImage(url, data, maxAge) {
+  try {
+    const now = Math.floor(Date.now() / 1000);
+    const cacheData = JSON.stringify({
+      timestamp: now,
+      expiration: now + maxAge,
+      data: data,
+    });
+    localStorage.setItem(url, cacheData);
+  } catch (error) {
+    if (error.name === "QuotaExceededError") {
+      console.warn("Local storage quota exceeded. Unable to cache image.");
+      // Optionally, you could try to clear some old cached items here
+    } else {
+      console.error("Error setting cached image:", error);
+    }
+  }
 }
 
 export async function fetchImageWithCache(
@@ -48,17 +57,21 @@ export async function fetchImageWithCache(
 
     const base64data = await blobToBase64(blob);
 
-    // Get cache duration from response headers if available
-    const cacheControl = response.headers.get("Cache-Control");
-    const maxAge = cacheControl
-      ? parseInt(cacheControl.split("=")[1])
-      : cacheDuration;
+    // Try to cache the image, but don't throw an error if it fails
+    try {
+      const cacheControl = response.headers.get("Cache-Control");
+      const maxAge = cacheControl
+        ? parseInt(cacheControl.split("=")[1])
+        : cacheDuration;
+      setCachedImage(url, base64data, maxAge);
+    } catch (cacheError) {
+      console.warn("Failed to cache image:", cacheError);
+    }
 
-    setCachedImage(url, base64data, maxAge);
     return base64data;
   } catch (error) {
     console.error("Error fetching image with cache:", error);
-    throw error; // Re-throw the error to be handled by the caller
+    throw error;
   }
 }
 function blobToBase64(blob) {

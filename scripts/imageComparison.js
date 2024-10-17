@@ -53,12 +53,12 @@ export async function checkImagePair(
       return { index, originalBlob, replacedBlob, similarity };
     } catch (error) {
       console.error("Error processing replaced image:", error);
-      cellReplaced.textContent = "Not found";
+      cellReplaced.innerHTML = `<span title="${error.message}">Not found</span>`;
       cellSimilarity.textContent = "0.00%";
     }
   } catch (error) {
     console.error("Error processing original image:", error);
-    cellOriginal.textContent = "Not found";
+    cellOriginal.innerHTML = `<span title="${error.message}">Not found</span>`;
     cellReplaced.textContent = "N/A";
     cellSimilarity.textContent = "N/A";
   }
