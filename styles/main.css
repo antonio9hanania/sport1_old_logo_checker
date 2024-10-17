@@ -178,6 +178,19 @@ img {
   font-weight: bold;
 }
 
+.cache-controller {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cache-controller .input-group {
+  flex: 1;
+  min-width: 200px;
+}
+
 @media screen and (min-width: 768px) {
   .input-group {
     flex-direction: row;
@@ -188,6 +201,43 @@ img {
     margin-right: 0.5rem;
     margin-bottom: 0;
   }
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.primary-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.primary-button:hover {
+  background-color: #45a049;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.primary-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+}
+
+.primary-button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transform: translateY(1px);
 }
 
 @media (prefers-color-scheme: dark) {

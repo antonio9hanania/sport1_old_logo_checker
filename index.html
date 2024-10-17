@@ -32,7 +32,37 @@
             required
           />
         </div>
-        <button id="checkImagesBtn">Check Images</button>
+      </div>
+
+      <div class="cache-controller">
+        <div class="input-group">
+          <label for="originalCacheDuration"
+            >Original Cache Duration (seconds):</label
+          >
+          <input
+            type="number"
+            id="originalCacheDuration"
+            min="0"
+            value="3600"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="replacedCacheDuration"
+            >Replaced Cache Duration (seconds):</label
+          >
+          <input
+            type="number"
+            id="replacedCacheDuration"
+            min="0"
+            value="1814400"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="button-container">
+        <button id="checkImagesBtn" class="primary-button">Check Images</button>
       </div>
 
       <div id="progressBar" aria-live="polite"></div>

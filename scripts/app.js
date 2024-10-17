@@ -1,4 +1,4 @@
-import { checkImagePair, calculateSimilarity } from "./imageComparison.js";
+import { checkImagePair } from "./imageComparison.js";
 import {
   updateProgress,
   showElement,
@@ -6,7 +6,8 @@ import {
   updateDownloadButton,
 } from "./utils.js";
 
-const corsProxy = "https://cold-sea-bd9d.antonioh.workers.dev/?apiurl=";
+const corsProxy =
+  "https://your-worker-name.your-subdomain.workers.dev/?apiurl=";
 const baseUrlOriginal = "https://sport1.maariv.co.il/_365images/Competitors/";
 const baseUrlReplaced =
   "https://imagecache.365scores.com/image/upload/f_png,w_68,h_68,c_limit,q_auto:eco,dpr_2,d_Competitors:default1.png/v7/Competitors/";
@@ -19,6 +20,12 @@ async function checkImages() {
   const similarityThreshold = parseFloat(
     document.getElementById("similarityThreshold").value
   );
+  const originalCacheDuration = parseInt(
+    document.getElementById("originalCacheDuration").value
+  );
+  const replacedCacheDuration = parseInt(
+    document.getElementById("replacedCacheDuration").value
+  );
   const tableBody = document.getElementById("imageTableBody");
   const progressBar = document.getElementById("progressBar");
   tableBody.innerHTML = "";
@@ -27,18 +34,22 @@ async function checkImages() {
   for (let i = startNum; i <= endNum; i++) {
     const urlOriginal = `${corsProxy}${encodeURIComponent(
       baseUrlOriginal + i + ".png"
-    )}`;
+    )}&originalCacheDuration=${originalCacheDuration}&replacedCacheDuration=${replacedCacheDuration}`;
     const urlReplaced = `${corsProxy}${encodeURIComponent(
       baseUrlReplaced + i
-    )}`;
-
-    await checkImagePair(
+    )}&originalCacheDuration=${originalCacheDuration}&replacedCacheDuration=${replacedCacheDuration}`;
+    const result = await checkImagePair(
       i,
       tableBody,
       similarityThreshold,
       urlOriginal,
-      urlReplaced
+      urlReplaced,
+      originalCacheDuration,
+      replacedCacheDuration
     );
+    if (result) {
+      validPairs.push(result);
+    }
     updateProgress(progressBar, i - startNum + 1, endNum - startNum + 1);
   }
 
@@ -82,9 +93,10 @@ function downloadImages(type) {
   });
 
   zip.generateAsync({ type: "blob" }).then((content) => {
-    saveAs(content, `${type}_images_100x100.zip`);
+    saveAs(content, `${type}_images.zip`);
   });
 }
+
 // Event Listeners
 document
   .getElementById("checkImagesBtn")
@@ -104,5 +116,3 @@ document
 document
   .getElementById("similarityThreshold")
   .addEventListener("change", updateDownloadButton);
-
-export { validPairs };

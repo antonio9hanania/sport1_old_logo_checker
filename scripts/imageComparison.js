@@ -1,12 +1,13 @@
-import { validPairs } from "./app.js";
-import { fetchImageAsBlob, resizeImageBlob } from "./utils.js";
+import { fetchImageWithCache, resizeImageBlob } from "./utils.js";
 
-async function checkImagePair(
+export async function checkImagePair(
   index,
   tableBody,
   threshold,
   urlOriginal,
-  urlReplaced
+  urlReplaced,
+  originalCacheDuration,
+  replacedCacheDuration
 ) {
   const row = tableBody.insertRow();
   const cellIndex = row.insertCell(0);
@@ -17,30 +18,39 @@ async function checkImagePair(
   cellIndex.textContent = index;
 
   try {
-    let originalBlob = await fetchImageAsBlob(urlOriginal);
-    originalBlob = await resizeImageBlob(originalBlob, 100, 100);
+    let originalBlob = await fetchImageWithCache(
+      urlOriginal,
+      true,
+      originalCacheDuration,
+      replacedCacheDuration
+    );
+    originalBlob = await resizeImageBlob(base64ToBlob(originalBlob), 100, 100);
     const originalUrl = URL.createObjectURL(originalBlob);
     cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}" width="100" height="100">`;
 
     try {
-      let replacedBlob = await fetchImageAsBlob(urlReplaced);
-      replacedBlob = await resizeImageBlob(replacedBlob, 100, 100);
+      let replacedBlob = await fetchImageWithCache(
+        urlReplaced,
+        false,
+        originalCacheDuration,
+        replacedCacheDuration
+      );
+      replacedBlob = await resizeImageBlob(
+        base64ToBlob(replacedBlob),
+        100,
+        100
+      );
       const replacedUrl = URL.createObjectURL(replacedBlob);
       cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}" width="100" height="100">`;
 
       const similarity = await calculateSimilarity(originalBlob, replacedBlob);
       cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
 
-      validPairs.push({
-        index,
-        originalBlob,
-        replacedBlob,
-        similarity,
-      });
-
       if (similarity < threshold) {
         row.classList.add("below-threshold");
       }
+
+      return { index, originalBlob, replacedBlob, similarity };
     } catch (error) {
       cellReplaced.textContent = "Not found";
       cellSimilarity.textContent = "0.00%";
@@ -50,9 +60,25 @@ async function checkImagePair(
     cellReplaced.textContent = "N/A";
     cellSimilarity.textContent = "N/A";
   }
+
+  return null;
 }
+
+function base64ToBlob(base64) {
+  const parts = base64.split(";base64,");
+  const contentType = parts[0].split(":")[1];
+  const raw = window.atob(parts[1]);
+  const rawLength = raw.length;
+  const uInt8Array = new Uint8Array(rawLength);
+
+  for (let i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+
+  return new Blob([uInt8Array], { type: contentType });
+}
+
 async function calculateSimilarity(blob1, blob2) {
-  // Blobs should already be 100x100, so we don't need to resize here
   const [hash1, hash2] = await Promise.all([
     getImageHash(blob1),
     getImageHash(blob2),
@@ -60,6 +86,7 @@ async function calculateSimilarity(blob1, blob2) {
   const distance = hammingDistance(hash1, hash2);
   return 100 - (distance / hash1.length) * 100;
 }
+
 async function getImageHash(blob) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -74,7 +101,7 @@ async function getImageHash(blob) {
   });
 }
 
-function getImageData(img, width = 100, height = 100) {
+function getImageData(img, width = 8, height = 8) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
@@ -107,5 +134,3 @@ function hammingDistance(hash1, hash2) {
   }
   return distance;
 }
-
-export { checkImagePair, calculateSimilarity };
