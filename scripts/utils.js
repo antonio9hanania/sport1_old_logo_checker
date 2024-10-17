@@ -97,35 +97,18 @@ export function updateDownloadButton() {
   downloadButton.textContent = `Download Replaced Images (Below ${threshold}% Similarity)`;
 }
 
-export async function fetchImageWithCache(
-  url,
-  isOriginal,
-  originalCacheDuration,
-  replacedCacheDuration
-) {
-  const cachedImage = getCachedImage(url);
-  if (cachedImage) {
-    return cachedImage;
+export async function fetchImageAsBlob(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const blob = await response.blob();
+    if (blob.size === 0) throw new Error("Image is empty");
+    return blob;
+  } catch (error) {
+    console.error("Error fetching image as blob:", error);
+    throw error; // Re-throw the error to be handled by the caller
   }
-
-  const cacheDuration = isOriginal
-    ? originalCacheDuration || DEFAULT_ORIGINAL_CACHE_DURATION
-    : replacedCacheDuration || DEFAULT_REPLACED_CACHE_DURATION;
-
-  const response = await fetch(url);
-  const blob = await response.blob();
-  const base64data = await blobToBase64(blob);
-
-  // Get cache duration from response headers if available
-  const cacheControl = response.headers.get("Cache-Control");
-  const maxAge = cacheControl
-    ? parseInt(cacheControl.split("=")[1])
-    : cacheDuration;
-
-  setCachedImage(url, base64data, maxAge);
-  return base64data;
 }
-
 export async function resizeImageBlob(blob, width, height) {
   return new Promise((resolve) => {
     const img = new Image();
