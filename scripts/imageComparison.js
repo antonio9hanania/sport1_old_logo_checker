@@ -1,12 +1,15 @@
 import { validPairs } from "./app.js";
 import { fetchImageAsBlob } from "./utils.js";
+import { fetchImageWithCache } from "./utils.js";
 
 async function checkImagePair(
   index,
   tableBody,
   threshold,
   urlOriginal,
-  urlReplaced
+  urlReplaced,
+  originalCacheDuration,
+  replacedCacheDuration
 ) {
   const row = tableBody.insertRow();
   const cellIndex = row.insertCell(0);
@@ -17,12 +20,29 @@ async function checkImagePair(
   cellIndex.textContent = index;
 
   try {
-    const originalBlob = await fetchImageAsBlob(urlOriginal);
+    let originalBlob = await fetchImageWithCache(
+      urlOriginal,
+      true,
+      originalCacheDuration,
+      replacedCacheDuration
+    );
+    originalBlob = await resizeImageBlob(base64ToBlob(originalBlob), 100, 100);
     const originalUrl = URL.createObjectURL(originalBlob);
     cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}" width="100" height="100">`;
 
     try {
-      const replacedBlob = await fetchImageAsBlob(urlReplaced);
+      let replacedBlob = await fetchImageWithCache(
+        urlReplaced,
+        false,
+        originalCacheDuration,
+        replacedCacheDuration
+      );
+      replacedBlob = await resizeImageBlob(
+        base64ToBlob(replacedBlob),
+        100,
+        100
+      );
+
       const replacedUrl = URL.createObjectURL(replacedBlob);
       cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}" width="100" height="100">`;
 
@@ -102,6 +122,20 @@ function hammingDistance(hash1, hash2) {
     if (hash1[i] !== hash2[i]) distance++;
   }
   return distance;
+}
+
+function base64ToBlob(base64) {
+  const parts = base64.split(";base64,");
+  const contentType = parts[0].split(":")[1];
+  const raw = window.atob(parts[1]);
+  const rawLength = raw.length;
+  const uInt8Array = new Uint8Array(rawLength);
+
+  for (let i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+
+  return new Blob([uInt8Array], { type: contentType });
 }
 
 export { checkImagePair, calculateSimilarity };

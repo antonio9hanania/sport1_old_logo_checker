@@ -10,7 +10,7 @@ import {
 const corsProxy = "https://cors-anywhere.herokuapp.com/";
 const baseUrlOriginal = "https://sport1.maariv.co.il/_365images/Competitors/";
 const baseUrlReplaced =
-  "https://imagecache.365scores.com/image/upload/f_png,w_50,h_50,c_limit,q_auto:eco,dpr_2,d_Competitors:default1.png/v7/Competitors/25623";
+  "https://imagecache.365scores.com/image/upload/f_png,w_68,h_68,c_limit,q_auto:eco,dpr_2,d_Competitors:default1.png/v7/Competitors/";
 
 let validPairs = [];
 
@@ -20,22 +20,36 @@ async function checkImages() {
   const similarityThreshold = parseFloat(
     document.getElementById("similarityThreshold").value
   );
+  const originalCacheDuration = parseInt(
+    document.getElementById("originalCacheDuration").value
+  );
+  const replacedCacheDuration = parseInt(
+    document.getElementById("replacedCacheDuration").value
+  );
+
   const tableBody = document.getElementById("imageTableBody");
   const progressBar = document.getElementById("progressBar");
   tableBody.innerHTML = "";
   validPairs = [];
 
   for (let i = startNum; i <= endNum; i++) {
-    const urlOriginal = `${corsProxy}${baseUrlOriginal}${i}.png`;
-    const urlReplaced = `${corsProxy}${baseUrlReplaced}${i}`;
+    const urlOriginal = `${corsProxy}${encodeURIComponent(
+      baseUrlOriginal + i + ".png"
+    )}&originalCacheDuration=${originalCacheDuration}&replacedCacheDuration=${replacedCacheDuration}`;
+    const urlReplaced = `${corsProxy}${encodeURIComponent(
+      baseUrlReplaced + i
+    )}&originalCacheDuration=${originalCacheDuration}&replacedCacheDuration=${replacedCacheDuration}`;
     try {
       await checkImagePair(
         i,
         tableBody,
         similarityThreshold,
         urlOriginal,
-        urlReplaced
+        urlReplaced,
+        originalCacheDuration,
+        replacedCacheDuration
       );
+
       updateProgress(progressBar, i - startNum + 1, endNum - startNum + 1);
       await delay(1000); // Add a 1-second delay between requests
     } catch (error) {

@@ -24,6 +24,30 @@
           min="0"
           max="100"
         />
+        <div class="input-group">
+          <label for="originalCacheDuration"
+            >Original Cache Duration (seconds):</label
+          >
+          <input
+            type="number"
+            id="originalCacheDuration"
+            min="0"
+            value="3600"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="replacedCacheDuration"
+            >Replaced Cache Duration (seconds):</label
+          >
+          <input
+            type="number"
+            id="replacedCacheDuration"
+            min="0"
+            value="1814400"
+            required
+          />
+        </div>
         <button id="checkImagesBtn">Check Images</button>
         <p id="rateMessage" style="display: none; color: orange">
           Note: Checking many images may take some time due to rate limiting.
