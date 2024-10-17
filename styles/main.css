@@ -1,87 +1,113 @@
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2980b9;
+  --background-color: #f4f4f4;
+  --text-color: #333;
+  --border-color: #ddd;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Arial", sans-serif;
   line-height: 1.6;
-  padding: 20px;
-  background-color: #f4f4f4;
-  color: #333;
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
 }
 
 h1 {
-  color: #2c3e50;
+  font-size: 2rem;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  color: var(--primary-color);
 }
 
 .control-panel {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
   align-items: center;
+  justify-content: center;
 }
 
 input,
 button {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  font-size: 14px;
 }
 
 input[type="number"] {
-  width: 80px;
+  width: 100px;
 }
 
 button {
-  background-color: #3498db;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #2980b9;
+button:hover,
+button:focus {
+  background-color: var(--secondary-color);
 }
 
 #progressBar {
-  background-color: #ecf0f1;
+  background-color: var(--background-color);
   border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 20px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
   text-align: center;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-bottom: 1.5rem;
 }
 
 th,
 td {
-  border: 1px solid #ddd;
-  padding: 12px;
+  padding: 0.75rem;
   text-align: left;
+  border-bottom: 1px solid var(--border-color);
 }
 
 th {
-  background-color: #3498db;
+  background-color: var(--primary-color);
   color: white;
 }
 
 img {
   max-width: 100px;
-  max-height: 100px;
+  height: auto;
   display: block;
   margin: 0 auto;
 }
@@ -90,28 +116,93 @@ img {
   background-color: #ffeaa7;
 }
 
-.button-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.download-button {
-  background-color: #2ecc71;
-}
-
-.download-button:hover {
-  background-color: #27ae60;
-}
-
-.filter-button {
-  background-color: #e74c3c;
-}
-
-.filter-button:hover {
-  background-color: #c0392b;
-}
-
 .hidden {
   display: none;
+}
+
+@media screen and (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+
+  .control-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  input,
+  button {
+    width: 100%;
+  }
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tr {
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+  }
+
+  td {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #3498db;
+    --secondary-color: #2980b9;
+    --background-color: #333;
+    --text-color: #f4f4f4;
+    --border-color: #555;
+  }
+
+  body {
+    color: var(--text-color);
+    background-color: var(--background-color);
+  }
+
+  input,
+  button {
+    background-color: #444;
+    color: var(--text-color);
+  }
+
+  th {
+    background-color: var(--secondary-color);
+  }
+
+  .below-threshold {
+    background-color: #635c36;
+  }
 }
