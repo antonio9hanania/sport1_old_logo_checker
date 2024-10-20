@@ -60,15 +60,17 @@ export async function checkImagePair(
   if (originalBlob && replacedBlob) {
     similarity = await calculateSimilarity(originalBlob, replacedBlob);
     cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
-
-    if (similarity < threshold) {
-      row.classList.add("below-threshold");
-    }
   } else {
+    similarity = 0;
     cellSimilarity.textContent = "0.00%";
-    if (isOriginalMissing && replacedBlob) {
-      row.classList.add("missing-team");
-    }
+  }
+
+  if (similarity <= threshold) {
+    row.classList.add("below-threshold");
+  }
+
+  if (isOriginalMissing && replacedBlob) {
+    row.classList.add("missing-team");
   }
 
   // Add copy button for schema

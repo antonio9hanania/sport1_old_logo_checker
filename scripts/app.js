@@ -373,7 +373,10 @@ async function copySchemaToClipboard(teamId, button) {
 function filterTable() {
   const rows = document.querySelectorAll("#imageTableBody tr");
   rows.forEach((row) => {
-    if (row.classList.contains("below-threshold")) {
+    if (
+      row.classList.contains("below-threshold") ||
+      row.classList.contains("missing-team")
+    ) {
       showElement(row);
     } else {
       hideElement(row);
@@ -397,7 +400,7 @@ function downloadImages(type) {
       zip.file(`${pair.id}.png`, pair.originalBlob);
     } else if (
       type === "replaced" &&
-      (pair.similarity < threshold || !pair.originalBlob)
+      (pair.similarity <= threshold || !pair.originalBlob)
     ) {
       zip.file(`${pair.id}.png`, pair.replacedBlob);
     }

@@ -198,13 +198,11 @@ td:nth-child(2) {
 }
 
 .below-threshold {
-  background-color: var(
-    --below-threshold-color
-  ) !important; /* Added !important */
+  background-color: var(--below-threshold-color);
 }
 
 .missing-team {
-  border: 2px solid red;
+  box-shadow: inset 0 0 0 2px red;
 }
 
 img {
@@ -253,6 +251,11 @@ img {
   font-size: 0.8em;
 }
 
+@media (prefers-color-scheme: light), (prefers-color-scheme: dark) {
+  .missing-team {
+    box-shadow: inset 0 0 0 2px red;
+  }
+}
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: #333;
