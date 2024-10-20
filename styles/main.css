@@ -233,6 +233,7 @@ img {
     --background-color: #333;
     --text-color: #f4f4f4;
     --border-color: #555;
+    --input-background: #444; /* New variable for input backgrounds */
   }
 
   body {
@@ -243,12 +244,17 @@ img {
   .searchable-select,
   .options-container,
   input[type="number"],
-  td {
+  input[type="text"],
+  select {
+    background-color: var(--input-background);
     color: var(--text-color);
+    border-color: var(--border-color);
   }
 
+  td,
   td:first-child {
-    background-color: #444;
+    background-color: var(--input-background);
+    color: var(--text-color);
   }
 
   .option:hover {
