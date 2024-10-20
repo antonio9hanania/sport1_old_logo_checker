@@ -12,6 +12,7 @@ export async function checkImagePair(
   createCopySchemaButton
 ) {
   const row = tableBody.insertRow();
+  row.id = `row-${id}`; // Add an id to the row for easy reference
   const cellId = row.insertCell(0);
   const cellTeamName = row.insertCell(1);
   const cellOriginal = row.insertCell(2);
@@ -22,8 +23,11 @@ export async function checkImagePair(
   cellId.textContent = id;
   cellTeamName.textContent = teamName || "N/A";
 
+  let originalBlob, replacedBlob, similarity;
+  let isOriginalMissing = false;
+
   try {
-    let originalBlob = await fetchImageWithCache(
+    originalBlob = await fetchImageWithCache(
       urlOriginal,
       true,
       originalCacheDuration,
@@ -32,46 +36,52 @@ export async function checkImagePair(
     originalBlob = await resizeImageBlob(base64ToBlob(originalBlob), 100, 100);
     const originalUrl = URL.createObjectURL(originalBlob);
     cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${id}" width="100" height="100">`;
-
-    try {
-      let replacedBlob = await fetchImageWithCache(
-        urlReplaced,
-        false,
-        originalCacheDuration,
-        replacedCacheDuration
-      );
-      replacedBlob = await resizeImageBlob(
-        base64ToBlob(replacedBlob),
-        100,
-        100
-      );
-      const replacedUrl = URL.createObjectURL(replacedBlob);
-      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${id}" width="100" height="100">`;
-
-      const similarity = await calculateSimilarity(originalBlob, replacedBlob);
-      cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
-
-      if (similarity < threshold) {
-        row.classList.add("below-threshold");
-      }
-
-      const copyButton = createCopySchemaButton(id);
-      cellSchema.appendChild(copyButton);
-
-      return { id, teamName, originalBlob, replacedBlob, similarity };
-    } catch (error) {
-      console.error("Error processing replaced image:", error);
-      cellReplaced.textContent = "Not found";
-      cellSimilarity.textContent = "0.00%";
-    }
   } catch (error) {
     console.error("Error processing original image:", error);
     cellOriginal.textContent = "Not found";
-    cellReplaced.textContent = "N/A";
-    cellSimilarity.textContent = "N/A";
+    isOriginalMissing = true;
   }
 
-  return null;
+  try {
+    replacedBlob = await fetchImageWithCache(
+      urlReplaced,
+      false,
+      originalCacheDuration,
+      replacedCacheDuration
+    );
+    replacedBlob = await resizeImageBlob(base64ToBlob(replacedBlob), 100, 100);
+    const replacedUrl = URL.createObjectURL(replacedBlob);
+    cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${id}" width="100" height="100">`;
+  } catch (error) {
+    console.error("Error processing replaced image:", error);
+    cellReplaced.textContent = "Not found";
+  }
+
+  if (originalBlob && replacedBlob) {
+    similarity = await calculateSimilarity(originalBlob, replacedBlob);
+    cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
+
+    if (similarity < threshold) {
+      row.classList.add("below-threshold");
+    }
+  } else {
+    cellSimilarity.textContent = "0.00%";
+    if (isOriginalMissing && replacedBlob) {
+      row.classList.add("missing-team");
+    }
+  }
+
+  // Add copy button for schema
+  const copyButton = createCopySchemaButton(id);
+  cellSchema.appendChild(copyButton);
+
+  return {
+    id,
+    teamName,
+    originalBlob,
+    replacedBlob,
+    similarity: similarity || 0,
+  };
 }
 
 function base64ToBlob(base64) {

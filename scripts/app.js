@@ -393,14 +393,13 @@ function downloadImages(type) {
   );
 
   validPairs.forEach((pair) => {
-    if (
-      type === "original" ||
-      (type === "replaced" && pair.similarity < threshold)
+    if (type === "original" && pair.originalBlob) {
+      zip.file(`${pair.id}.png`, pair.originalBlob);
+    } else if (
+      type === "replaced" &&
+      (pair.similarity < threshold || !pair.originalBlob)
     ) {
-      zip.file(
-        `${pair.index || pair.teamId}.png`,
-        type === "original" ? pair.originalBlob : pair.replacedBlob
-      );
+      zip.file(`${pair.id}.png`, pair.replacedBlob);
     }
   });
 
@@ -408,7 +407,6 @@ function downloadImages(type) {
     saveAs(content, `${type}_images.zip`);
   });
 }
-
 // Event Listeners
 checkImagesBtn.addEventListener("click", checkImages);
 checkImagesByLeagueBtn.addEventListener("click", checkImagesByLeague);
