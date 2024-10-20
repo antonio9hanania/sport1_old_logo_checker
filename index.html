@@ -3,15 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sport1 Logo Up-to-Date Checker</title>
+    <title>Sport1 Logo Checker</title>
     <link rel="stylesheet" href="styles/main.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   </head>
   <body>
     <div class="container">
-      <h1>Sport1 Logo Up-to-Date Checker</h1>
-
+      <h1>Sport1 Logo Checker</h1>
       <div class="control-panel">
         <div class="input-group">
           <label for="startNum">Start Number:</label>
@@ -20,6 +19,32 @@
         <div class="input-group">
           <label for="endNum">End Number:</label>
           <input type="number" id="endNum" min="1" value="600" required />
+        </div>
+        <div class="input-group">
+          <label for="category">Select Category:</label>
+          <div class="select-container">
+            <input
+              type="text"
+              id="category"
+              class="searchable-select"
+              placeholder="Search for a category"
+              value="כדורגל"
+            />
+            <div id="category-options" class="options-container"></div>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="league">Select League:</label>
+          <div class="select-container">
+            <input
+              type="text"
+              id="league"
+              class="searchable-select"
+              placeholder="Search for a league"
+              value="ליגת העל"
+            />
+            <div id="league-options" class="options-container"></div>
+          </div>
         </div>
         <div class="input-group">
           <label for="similarityThreshold">Similarity Threshold (%):</label>
@@ -32,9 +57,6 @@
             required
           />
         </div>
-      </div>
-
-      <div class="cache-controller">
         <div class="input-group">
           <label for="originalCacheDuration"
             >Original Cache Duration (seconds):</label
@@ -60,23 +82,18 @@
           />
         </div>
       </div>
-
       <div class="button-container">
-        <button id="checkImagesBtn" class="primary-button">Check Images</button>
+        <button id="checkImagesBtn">Check Images by index run</button>
+        <button id="checkImagesByLeagueBtn">
+          Check Images by League teams
+        </button>
       </div>
-
-      <div id="progressBar" aria-live="polite"></div>
-
-      <div id="controlButtons" class="button-group hidden">
-        <button id="filterTableBtn">Show Images Below Threshold</button>
-        <button id="showAllImagesBtn">Show All Images</button>
-      </div>
-
+      <div id="progressBar"></div>
       <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th>Index</th>
+              <th>Index/Team ID</th>
               <th>Original Image</th>
               <th>Replaced Image</th>
               <th>Similarity</th>
@@ -85,7 +102,10 @@
           <tbody id="imageTableBody"></tbody>
         </table>
       </div>
-
+      <div id="controlButtons" class="button-group hidden">
+        <button id="filterTableBtn">Show Images Below Threshold</button>
+        <button id="showAllImagesBtn">Show All Images</button>
+      </div>
       <div id="downloadButtons" class="button-group hidden">
         <button id="downloadOriginalBtn">Download Original Valid Images</button>
         <button id="downloadReplacedBtn">
@@ -93,7 +113,6 @@
         </button>
       </div>
     </div>
-
     <script type="module" src="scripts/app.js"></script>
   </body>
 </html>

@@ -42,30 +42,85 @@ h1 {
 .control-panel {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 1rem;
   margin-bottom: 1rem;
   align-items: center;
   justify-content: center;
 }
 
-input,
-button {
+.input-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.select-container {
+  position: relative;
+}
+
+.searchable-select {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: white;
+}
+
+.options-container {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-top: none;
+  z-index: 1000;
+}
+
+.option {
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.option:hover {
+  background-color: var(--background-color);
+}
+
+label {
+  margin-bottom: 0.25rem;
+}
+
+input[type="number"] {
   padding: 0.5rem;
   font-size: 0.9rem;
   border: 1px solid var(--border-color);
   border-radius: 4px;
 }
 
-input[type="number"] {
-  width: 80px;
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
   background-color: var(--primary-color);
   color: white;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  width: 100%;
+  max-width: 300px;
 }
 
 button:hover,
@@ -74,33 +129,23 @@ button:focus {
 }
 
 #progressBar {
+  margin-top: 1rem;
+  padding: 0.5rem;
   background-color: var(--background-color);
   border-radius: 4px;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
   text-align: center;
-}
-
-.button-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  justify-content: center;
 }
 
 .table-container {
   width: 100%;
   overflow-x: auto;
-  position: relative;
-  background-color: var(--background-color);
+  margin-top: 1rem;
 }
 
 table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin-bottom: 1rem;
 }
 
 th,
@@ -108,7 +153,6 @@ td {
   padding: 0.5rem;
   text-align: left;
   border: 1px solid var(--border-color);
-  min-width: 100px;
 }
 
 th {
@@ -119,7 +163,10 @@ th {
   z-index: 10;
 }
 
-/* Freeze first column including its header */
+td {
+  background-color: white;
+}
+
 th:first-child,
 td:first-child {
   position: sticky;
@@ -127,18 +174,17 @@ td:first-child {
   z-index: 1;
 }
 
-/* Increase z-index for the intersection of sticky header and first column */
 th:first-child {
   z-index: 11;
 }
 
 .below-threshold {
-  background-color: var(--below-threshold-color) !important;
+  background-color: var(--below-threshold-color);
 }
 
 img {
-  max-width: 80px;
-  height: auto;
+  max-width: 100px;
+  max-height: 100px;
   display: block;
   margin: 0 auto;
 }
@@ -154,11 +200,9 @@ img {
 
   .control-panel {
     flex-direction: column;
-    align-items: stretch;
   }
 
-  input,
-  button {
+  .input-group {
     width: 100%;
   }
 }
@@ -167,85 +211,17 @@ img {
   h1 {
     font-size: 2rem;
   }
-}
 
-.input-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 0.5rem;
-}
-
-.input-group label {
-  margin-bottom: 0.25rem;
-  font-weight: bold;
-}
-
-.cache-controller {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.cache-controller .input-group {
-  flex: 1;
-  min-width: 200px;
-}
-
-@media screen and (min-width: 768px) {
   .input-group {
-    flex-direction: row;
-    align-items: center;
+    width: calc(50% - 0.5rem);
   }
-
-  .input-group label {
-    margin-right: 0.5rem;
-    margin-bottom: 0;
+  button {
+    width: auto;
   }
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.primary-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: white;
-  background-color: #4caf50;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.primary-button:hover {
-  background-color: #45a049;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
-}
-
-.primary-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
-}
-
-.primary-button:active {
-  background-color: #3e8e41;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  transform: translateY(1px);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --primary-color: #3498db;
-    --secondary-color: #2980b9;
     --background-color: #333;
     --text-color: #f4f4f4;
     --border-color: #555;
@@ -256,11 +232,19 @@ img {
     background-color: var(--background-color);
   }
 
-  th {
-    background-color: var(--secondary-color);
+  .searchable-select,
+  .options-container,
+  input[type="number"],
+  td {
+    background-color: #444;
+    color: var(--text-color);
+  }
+
+  .option:hover {
+    background-color: #555;
   }
 
   .below-threshold {
-    background-color: var(--below-threshold-color-dark) !important;
+    background-color: var(--below-threshold-color-dark);
   }
 }

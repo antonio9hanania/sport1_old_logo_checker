@@ -1,7 +1,7 @@
 import { fetchImageWithCache, resizeImageBlob } from "./utils.js";
 
 export async function checkImagePair(
-  index,
+  teamId,
   tableBody,
   threshold,
   urlOriginal,
@@ -10,12 +10,12 @@ export async function checkImagePair(
   replacedCacheDuration
 ) {
   const row = tableBody.insertRow();
-  const cellIndex = row.insertCell(0);
+  const cellTeamId = row.insertCell(0);
   const cellOriginal = row.insertCell(1);
   const cellReplaced = row.insertCell(2);
   const cellSimilarity = row.insertCell(3);
 
-  cellIndex.textContent = index;
+  cellTeamId.textContent = teamId;
 
   try {
     let originalBlob = await fetchImageWithCache(
@@ -26,7 +26,7 @@ export async function checkImagePair(
     );
     originalBlob = await resizeImageBlob(base64ToBlob(originalBlob), 100, 100);
     const originalUrl = URL.createObjectURL(originalBlob);
-    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${index}" width="100" height="100">`;
+    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${teamId}" width="100" height="100">`;
 
     try {
       let replacedBlob = await fetchImageWithCache(
@@ -41,7 +41,7 @@ export async function checkImagePair(
         100
       );
       const replacedUrl = URL.createObjectURL(replacedBlob);
-      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${index}" width="100" height="100">`;
+      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${teamId}" width="100" height="100">`;
 
       const similarity = await calculateSimilarity(originalBlob, replacedBlob);
       cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
@@ -50,15 +50,15 @@ export async function checkImagePair(
         row.classList.add("below-threshold");
       }
 
-      return { index, originalBlob, replacedBlob, similarity };
+      return { teamId, originalBlob, replacedBlob, similarity };
     } catch (error) {
       console.error("Error processing replaced image:", error);
-      cellReplaced.innerHTML = `<span title="${error.message}">Not found</span>`;
+      cellReplaced.textContent = "Not found";
       cellSimilarity.textContent = "0.00%";
     }
   } catch (error) {
     console.error("Error processing original image:", error);
-    cellOriginal.innerHTML = `<span title="${error.message}">Not found</span>`;
+    cellOriginal.textContent = "Not found";
     cellReplaced.textContent = "N/A";
     cellSimilarity.textContent = "N/A";
   }
