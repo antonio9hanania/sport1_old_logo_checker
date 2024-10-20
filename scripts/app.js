@@ -305,7 +305,7 @@ async function generateSchemaForTeam(teamId) {
   return { schema: JSON.stringify(schema, null, 2), hasCoach };
 }
 
-async function copySchemaToClipboard(teamId, button) {
+export async function copySchemaToClipboard(teamId, button) {
   const progressIndicator = button.querySelector(".progress-indicator");
   progressIndicator.style.display = "inline-block";
   button.disabled = true;
