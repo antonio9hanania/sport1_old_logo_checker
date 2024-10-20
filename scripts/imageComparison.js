@@ -28,7 +28,7 @@ export async function checkImagePair(
     );
     originalBlob = await resizeImageBlob(base64ToBlob(originalBlob), 100, 100);
     const originalUrl = URL.createObjectURL(originalBlob);
-    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${teamId}" width="100" height="100">`;
+    cellOriginal.innerHTML = `<img src="${originalUrl}" alt="Original image ${id}" width="100" height="100">`;
 
     try {
       let replacedBlob = await fetchImageWithCache(
@@ -43,7 +43,7 @@ export async function checkImagePair(
         100
       );
       const replacedUrl = URL.createObjectURL(replacedBlob);
-      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${teamId}" width="100" height="100">`;
+      cellReplaced.innerHTML = `<img src="${replacedUrl}" alt="Replaced image ${id}" width="100" height="100">`;
 
       const similarity = await calculateSimilarity(originalBlob, replacedBlob);
       cellSimilarity.textContent = `${similarity.toFixed(2)}%`;
