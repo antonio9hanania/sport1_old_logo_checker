@@ -128,6 +128,14 @@ button:focus {
   background-color: var(--secondary-color);
 }
 
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
 #progressBar {
   margin-top: 1rem;
   padding: 0.5rem;
@@ -163,15 +171,15 @@ th {
   z-index: 10;
 }
 
-td {
-  background-color: white;
-}
-
 th:first-child,
 td:first-child {
   position: sticky;
   left: 0;
   z-index: 1;
+}
+
+td:first-child {
+  background-color: white;
 }
 
 th:first-child {
@@ -236,8 +244,11 @@ img {
   .options-container,
   input[type="number"],
   td {
-    background-color: #444;
     color: var(--text-color);
+  }
+
+  td:first-child {
+    background-color: #444;
   }
 
   .option:hover {
