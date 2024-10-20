@@ -171,6 +171,10 @@ th {
   z-index: 10;
 }
 
+td {
+  background-color: transparent; /* Changed from white to transparent */
+}
+
 th:first-child,
 td:first-child {
   position: sticky;
@@ -179,7 +183,7 @@ td:first-child {
 }
 
 td:first-child {
-  background-color: white;
+  background-color: var(--background-color); /* Use the main background color */
 }
 
 th:first-child {
@@ -187,7 +191,9 @@ th:first-child {
 }
 
 .below-threshold {
-  background-color: var(--below-threshold-color);
+  background-color: var(
+    --below-threshold-color
+  ) !important; /* Added !important */
 }
 
 img {
@@ -233,7 +239,8 @@ img {
     --background-color: #333;
     --text-color: #f4f4f4;
     --border-color: #555;
-    --input-background: #444; /* New variable for input backgrounds */
+    --input-background: #444;
+    --below-threshold-color: #635c36; /* Updated for dark mode */
   }
 
   body {
@@ -253,15 +260,11 @@ img {
 
   td,
   td:first-child {
-    background-color: var(--input-background);
+    background-color: var(--background-color);
     color: var(--text-color);
   }
 
   .option:hover {
     background-color: #555;
-  }
-
-  .below-threshold {
-    background-color: var(--below-threshold-color-dark);
   }
 }
