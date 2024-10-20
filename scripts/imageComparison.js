@@ -8,7 +8,8 @@ export async function checkImagePair(
   urlOriginal,
   urlReplaced,
   originalCacheDuration,
-  replacedCacheDuration
+  replacedCacheDuration,
+  createCopySchemaButton
 ) {
   const row = tableBody.insertRow();
   const cellId = row.insertCell(0);
@@ -20,6 +21,7 @@ export async function checkImagePair(
 
   cellId.textContent = id;
   cellTeamName.textContent = teamName || "N/A";
+
   try {
     let originalBlob = await fetchImageWithCache(
       urlOriginal,
@@ -53,16 +55,7 @@ export async function checkImagePair(
         row.classList.add("below-threshold");
       }
 
-      const copyButton = document.createElement("button");
-      copyButton.textContent = "Copy Schema";
-      copyButton.onclick = () => copySchemaToClipboard(id, copyButton);
-
-      const progressIndicator = document.createElement("span");
-      progressIndicator.className = "progress-indicator";
-      progressIndicator.textContent = "🔄";
-      progressIndicator.style.display = "none";
-
-      copyButton.appendChild(progressIndicator);
+      const copyButton = createCopySchemaButton(id);
       cellSchema.appendChild(copyButton);
 
       return { id, teamName, originalBlob, replacedBlob, similarity };

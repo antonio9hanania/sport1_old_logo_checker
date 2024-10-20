@@ -153,13 +153,16 @@ async function checkImages() {
 
     const result = await checkImagePair(
       i,
+      null,
       imageTableBody,
       similarityThreshold,
       urlOriginal,
       urlReplaced,
       originalCacheDuration,
-      replacedCacheDuration
+      replacedCacheDuration,
+      createCopySchemaButton
     );
+
     if (result) {
       validPairs.push(result);
     }
@@ -220,8 +223,10 @@ async function checkImagesByLeague() {
         urlOriginal,
         urlReplaced,
         originalCacheDuration,
-        replacedCacheDuration
+        replacedCacheDuration,
+        createCopySchemaButton
       );
+
       if (result) {
         validPairs.push(result);
       }
@@ -305,7 +310,43 @@ async function generateSchemaForTeam(teamId) {
   return { schema: JSON.stringify(schema, null, 2), hasCoach };
 }
 
-export async function copySchemaToClipboard(teamId, button) {
+function createCopySchemaButton(id) {
+  const copyButton = document.createElement("button");
+  copyButton.textContent = "Copy Schema";
+  copyButton.onclick = async () => {
+    const progressIndicator = copyButton.querySelector(".progress-indicator");
+    progressIndicator.style.display = "inline-block";
+    copyButton.disabled = true;
+
+    try {
+      const { schema, hasCoach } = await generateSchemaForTeam(id);
+      await navigator.clipboard.writeText(schema);
+      copyButton.textContent = "Copied!";
+      if (!hasCoach) {
+        console.warn("No coach found in the data.");
+      }
+    } catch (error) {
+      console.error("Error generating or copying schema:", error);
+      copyButton.textContent = "Error";
+    } finally {
+      progressIndicator.style.display = "none";
+      copyButton.disabled = false;
+      setTimeout(() => {
+        copyButton.textContent = "Copy Schema";
+      }, 2000);
+    }
+  };
+
+  const progressIndicator = document.createElement("span");
+  progressIndicator.className = "progress-indicator";
+  progressIndicator.textContent = "🔄";
+  progressIndicator.style.display = "none";
+
+  copyButton.appendChild(progressIndicator);
+  return copyButton;
+}
+
+async function copySchemaToClipboard(teamId, button) {
   const progressIndicator = button.querySelector(".progress-indicator");
   progressIndicator.style.display = "inline-block";
   button.disabled = true;
