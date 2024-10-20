@@ -16,6 +16,7 @@ export async function checkImagePair(
   const cellOriginal = row.insertCell(2);
   const cellReplaced = row.insertCell(3);
   const cellSimilarity = row.insertCell(4);
+  const cellSchema = row.insertCell(5);
 
   cellId.textContent = id;
   cellTeamName.textContent = teamName || "N/A";
@@ -51,6 +52,18 @@ export async function checkImagePair(
       if (similarity < threshold) {
         row.classList.add("below-threshold");
       }
+
+      const copyButton = document.createElement("button");
+      copyButton.textContent = "Copy Schema";
+      copyButton.onclick = () => copySchemaToClipboard(id, copyButton);
+
+      const progressIndicator = document.createElement("span");
+      progressIndicator.className = "progress-indicator";
+      progressIndicator.textContent = "🔄";
+      progressIndicator.style.display = "none";
+
+      copyButton.appendChild(progressIndicator);
+      cellSchema.appendChild(copyButton);
 
       return { id, teamName, originalBlob, replacedBlob, similarity };
     } catch (error) {

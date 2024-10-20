@@ -121,6 +121,7 @@ button {
   transition: background-color 0.3s ease;
   width: 100%;
   max-width: 300px;
+  position: relative;
 }
 
 button:hover,
@@ -238,6 +239,14 @@ img {
   button {
     width: auto;
   }
+}
+
+.progress-indicator {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8em;
 }
 
 @media (prefers-color-scheme: dark) {

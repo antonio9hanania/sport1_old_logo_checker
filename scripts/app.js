@@ -236,6 +236,99 @@ async function checkImagesByLeague() {
     progressBar.textContent = "Error checking images. Please try again.";
   }
 }
+
+async function fetchJsonData(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return await response.json();
+}
+
+function extractRelevantData(jsonData) {
+  const squad = jsonData.squads[0];
+  const team = jsonData.competitors[0];
+  const league = jsonData.competitions.find(
+    (comp) => comp.id === team.mainCompetitionId
+  );
+  const sport = jsonData.sports[0];
+
+  return { squad, team, league, sport };
+}
+
+function transformToSchema(extractedData) {
+  const { squad, team, league, sport } = extractedData;
+
+  let coach = null;
+  const athletes = [];
+
+  squad.athletes.forEach((athlete) => {
+    if (athlete.formationPosition.name === "מאמן") {
+      coach = {
+        "@type": "Person",
+        name: athlete.name,
+      };
+    } else {
+      athletes.push({
+        "@type": "Person",
+        name: athlete.name,
+      });
+    }
+  });
+
+  const schema = {
+    "@context": "http://schema.org",
+    "@type": "SportsTeam",
+    name: team.name,
+    sport: sport.name,
+    memberOf: [
+      {
+        "@type": "SportsOrganization",
+        name: league.name,
+      },
+    ],
+    athlete: athletes,
+  };
+
+  if (coach) {
+    schema.coach = coach;
+  }
+
+  return { schema, hasCoach: !!coach };
+}
+
+async function generateSchemaForTeam(teamId) {
+  const url = `https://webws.365scores.com/web/squads/?appTypeId=5&langId=2&timezoneName=Asia/Jerusalem&userCountryId=6&competitors=${teamId}`;
+  const jsonData = await fetchJsonData(url);
+  const extractedData = extractRelevantData(jsonData);
+  const { schema, hasCoach } = transformToSchema(extractedData);
+  return { schema: JSON.stringify(schema, null, 2), hasCoach };
+}
+
+async function copySchemaToClipboard(teamId, button) {
+  const progressIndicator = button.querySelector(".progress-indicator");
+  progressIndicator.style.display = "inline-block";
+  button.disabled = true;
+
+  try {
+    const { schema, hasCoach } = await generateSchemaForTeam(teamId);
+    await navigator.clipboard.writeText(schema);
+    button.textContent = "Copied!";
+    if (!hasCoach) {
+      console.warn("No coach found in the data.");
+    }
+  } catch (error) {
+    console.error("Error generating or copying schema:", error);
+    button.textContent = "Error";
+  } finally {
+    progressIndicator.style.display = "none";
+    button.disabled = false;
+    setTimeout(() => {
+      button.textContent = "Copy Schema";
+    }, 2000);
+  }
+}
+
 function filterTable() {
   const rows = document.querySelectorAll("#imageTableBody tr");
   rows.forEach((row) => {
