@@ -1,7 +1,8 @@
 import { fetchImageWithCache, resizeImageBlob } from "./utils.js";
 
 export async function checkImagePair(
-  teamId,
+  id,
+  teamName,
   tableBody,
   threshold,
   urlOriginal,
@@ -10,13 +11,14 @@ export async function checkImagePair(
   replacedCacheDuration
 ) {
   const row = tableBody.insertRow();
-  const cellTeamId = row.insertCell(0);
-  const cellOriginal = row.insertCell(1);
-  const cellReplaced = row.insertCell(2);
-  const cellSimilarity = row.insertCell(3);
+  const cellId = row.insertCell(0);
+  const cellTeamName = row.insertCell(1);
+  const cellOriginal = row.insertCell(2);
+  const cellReplaced = row.insertCell(3);
+  const cellSimilarity = row.insertCell(4);
 
-  cellTeamId.textContent = teamId;
-
+  cellId.textContent = id;
+  cellTeamName.textContent = teamName || "N/A";
   try {
     let originalBlob = await fetchImageWithCache(
       urlOriginal,
@@ -50,7 +52,7 @@ export async function checkImagePair(
         row.classList.add("below-threshold");
       }
 
-      return { teamId, originalBlob, replacedBlob, similarity };
+      return { id, teamName, originalBlob, replacedBlob, similarity };
     } catch (error) {
       console.error("Error processing replaced image:", error);
       cellReplaced.textContent = "Not found";

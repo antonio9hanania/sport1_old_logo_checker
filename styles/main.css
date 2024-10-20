@@ -161,6 +161,7 @@ td {
   padding: 0.5rem;
   text-align: left;
   border: 1px solid var(--border-color);
+  min-width: 100px; /* Add this line to ensure a minimum width for all columns */
 }
 
 th {
@@ -188,6 +189,11 @@ td:first-child {
 
 th:first-child {
   z-index: 11;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+  min-width: 150px; /* Adjust this value as needed */
 }
 
 .below-threshold {

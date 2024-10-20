@@ -126,6 +126,8 @@ async function loadLeagues(categoryId) {
 }
 
 async function checkImages() {
+  document.getElementById("teamNameHeader").classList.add("hidden");
+
   const startNum = parseInt(document.getElementById("startNum").value);
   const endNum = parseInt(document.getElementById("endNum").value);
   const similarityThreshold = parseFloat(
@@ -189,23 +191,30 @@ async function checkImagesByLeague() {
   validPairs = [];
   progressBar.textContent = "Fetching team IDs...";
 
+  // Show the team name header
+  document.getElementById("teamNameHeader").classList.remove("hidden");
+
   try {
     const data = await fetchData(
       `${API_BASE_URL}/standings/?${API_PARAMS}&live=true&competitions=${selectedLeagueId}`
     );
-    const teamIds = data.standings[0].rows.map((row) => row.competitor.id);
+    const teams = data.standings[0].rows.map((row) => ({
+      id: row.competitor.id,
+      name: row.competitor.name,
+    }));
 
-    for (let i = 0; i < teamIds.length; i++) {
-      const teamId = teamIds[i];
+    for (let i = 0; i < teams.length; i++) {
+      const team = teams[i];
       const urlOriginal = `${corsProxy}${encodeURIComponent(
-        baseUrlOriginal + teamId + ".png"
+        baseUrlOriginal + team.id + ".png"
       )}&originalCacheDuration=${originalCacheDuration}&replacedCacheDuration=${replacedCacheDuration}`;
       const urlReplaced = `${corsProxy}${encodeURIComponent(
-        baseUrlReplaced + teamId
+        baseUrlReplaced + team.id
       )}&originalCacheDuration=${originalCacheDuration}&replacedCacheDuration=${replacedCacheDuration}`;
 
       const result = await checkImagePair(
-        teamId,
+        team.id,
+        team.name,
         imageTableBody,
         similarityThreshold,
         urlOriginal,
@@ -216,7 +225,7 @@ async function checkImagesByLeague() {
       if (result) {
         validPairs.push(result);
       }
-      updateProgress(progressBar, i + 1, teamIds.length);
+      updateProgress(progressBar, i + 1, teams.length);
     }
 
     showElement("downloadButtons");
@@ -227,7 +236,6 @@ async function checkImagesByLeague() {
     progressBar.textContent = "Error checking images. Please try again.";
   }
 }
-
 function filterTable() {
   const rows = document.querySelectorAll("#imageTableBody tr");
   rows.forEach((row) => {
