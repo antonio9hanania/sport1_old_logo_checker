@@ -160,9 +160,9 @@ async function checkImages() {
       urlReplaced,
       originalCacheDuration,
       replacedCacheDuration,
-      createCopySchemaButton
+      createCopySchemaButton,
+      false
     );
-
     if (result) {
       validPairs.push(result);
     }
@@ -224,9 +224,9 @@ async function checkImagesByLeague() {
         urlReplaced,
         originalCacheDuration,
         replacedCacheDuration,
-        createCopySchemaButton
+        createCopySchemaButton,
+        true
       );
-
       if (result) {
         validPairs.push(result);
       }

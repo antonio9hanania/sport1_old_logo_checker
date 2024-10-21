@@ -9,19 +9,25 @@ export async function checkImagePair(
   urlReplaced,
   originalCacheDuration,
   replacedCacheDuration,
-  createCopySchemaButton
+  createCopySchemaButton,
+  isLeagueMode
 ) {
   const row = tableBody.insertRow();
-  row.id = `row-${id}`; // Add an id to the row for easy reference
+  row.id = `row-${id}`;
   const cellId = row.insertCell(0);
-  const cellTeamName = row.insertCell(1);
-  const cellOriginal = row.insertCell(2);
-  const cellReplaced = row.insertCell(3);
-  const cellSimilarity = row.insertCell(4);
-  const cellSchema = row.insertCell(5);
+  let cellTeamName;
+
+  if (isLeagueMode) {
+    cellTeamName = row.insertCell(1);
+    cellTeamName.textContent = teamName || "N/A";
+  }
+
+  const cellOriginal = row.insertCell(isLeagueMode ? 2 : 1);
+  const cellReplaced = row.insertCell(isLeagueMode ? 3 : 2);
+  const cellSimilarity = row.insertCell(isLeagueMode ? 4 : 3);
+  const cellSchema = row.insertCell(isLeagueMode ? 5 : 4);
 
   cellId.textContent = id;
-  cellTeamName.textContent = teamName || "N/A";
 
   let originalBlob, replacedBlob, similarity;
   let isOriginalMissing = false;
